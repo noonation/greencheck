@@ -16,15 +16,13 @@ export default async function Home() {
     <HydrateClient>
       <main className="flex min-h-screen flex-col items-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            GreenCheck Sample App
+          <h1 className="text-green-600 text-5xl font-extrabold tracking-tight sm:text-[5rem]">
+            GreenCheck MVP
           </h1>
-
-          <p>The next auth bits need wiring up with your keys:</p>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl">
+            {/* <p className="text-2xl">
               {hello ? hello.greeting : "Loading tRPC query..."}
-            </p>
+            </p> */}
 
             <div className="flex flex-col items-center justify-center gap-4">
               <p className="text-center text-2xl">
@@ -39,12 +37,8 @@ export default async function Home() {
             </div>
           </div>
 
-          {session?.user && <LatestPost />}
+          {/* {session?.user && <LatestPost />} */}
 
-          <p>
-            Just doing a little sample plain layout that matches up a little bit
-            with Margie's design I saw.
-          </p>
           <div className="flex min-w-full flex-row gap-8">
             <Link href="/things">
               <div className="h-[260px] border border-blue-400 p-8 transition-all hover:bg-slate-200 sm:w-[180px] xl:w-[360px]">
