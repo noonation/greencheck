@@ -9,6 +9,12 @@ import TwitterProvider from "next-auth/providers/twitter";
 import LinkedinProvider from "next-auth/providers/linkedin";
 
 import { env } from "~/env";
+import {
+  getProviderKeyFromProvider,
+  getClaimIdFromProfile,
+} from "./noo/transformers";
+import { checkClaim } from "./noo/checkClaim";
+import { GreencheckClaim } from "~/types/greencheck";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -55,18 +61,66 @@ export const authOptions: NextAuthOptions = {
      * if session already created, we're just adding another credential to the logged-in user
      */
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("just signed in from: ", account?.provider, user);
-      const isAllowedToSignIn = true;
-      if (isAllowedToSignIn) {
-        return true;
-      } else {
-        // Return false to display a default error message
+      if (!account?.provider) {
+        console.log("failed to sign in, no provider returned");
         return false;
-        // Or you can return a URL to redirect to:
-        // return '/unauthorized'
       }
+      if (!profile) {
+        console.log("failed to sign in, no profile returned");
+        return false;
+      }
+      console.log(
+        "just signed in from: ",
+        account.provider,
+        account,
+        user,
+        profile,
+      );
+      const claimSource = `${account.provider}.${getProviderKeyFromProvider(account.provider)}`;
+      const claimId = getClaimIdFromProfile(account.provider, profile);
+
+      return !!(claimSource && claimId);
+    },
+    async jwt(params) {
+      const { token, trigger } = params;
+      if (trigger === "signIn") {
+        const { account, profile } = params;
+        if (account && profile) {
+          const claimSource = `${account.provider}.${getProviderKeyFromProvider(account.provider)}`;
+          const claimId = getClaimIdFromProfile(account.provider, profile);
+
+          try {
+            const claimCheck = await checkClaim({
+              source: claimSource,
+              id: claimId,
+            });
+            console.log("got a claimCheck back");
+            console.log(claimCheck);
+
+            // maybe here we do a second call to get the user object?
+            token.claims = [claimCheck];
+          } catch (error) {
+            console.log("error checking the claim with noo server");
+            console.log(error);
+          }
+        }
+      }
+      // return the token
+      return token;
+    },
+    // @ts-ignore, this is correct function name and object destructure
+    async session({ session, token, user }) {
+      // Send properties to the client, like an access_token from a provider.
+      if (token.claims) {
+        session.claims = (token.claims || []) as GreencheckClaim[];
+      }
+      return session;
     },
   },
+  // this is how we define pages for making custom UI for next-auth signin, handling etc
+  // pages: {
+  //   signIn: "/auth/claim-service",
+  // },
   providers: [
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
@@ -74,7 +128,7 @@ export const authOptions: NextAuthOptions = {
     }),
     GitHubProvider({
       clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET
+      clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
     TwitterProvider({
       clientId: env.TWITTER_CLIENT_ID,
@@ -83,7 +137,7 @@ export const authOptions: NextAuthOptions = {
     }),
     LinkedinProvider({
       clientId: env.LINKEDIN_CLIENT_ID,
-      clientSecret: env.LINKEDIN_CLIENT_SECRET
+      clientSecret: env.LINKEDIN_CLIENT_SECRET,
     }),
 
     /**

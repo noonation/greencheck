@@ -5,7 +5,7 @@ import { getServerAuthSession } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
 
 export default async function Home() {
-  const hello = await api.post.hello({ text: "from GreenCheck" });
+  // const hello = await api.post.hello({ text: "from GreenCheck" });
   const session = await getServerAuthSession();
 
   void api.post.getLatest.prefetch();
@@ -16,7 +16,7 @@ export default async function Home() {
     <HydrateClient>
       <main className="flex min-h-screen flex-col items-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-green-600 text-5xl font-extrabold tracking-tight sm:text-[5rem]">
+          <h1 className="text-5xl font-extrabold tracking-tight text-green-600 sm:text-[5rem]">
             GreenCheck MVP
           </h1>
           <div className="flex flex-col items-center gap-2">
@@ -60,6 +60,13 @@ export default async function Home() {
               <h2 className="sm:text-md m-0 font-extrabold tracking-tight md:text-xl">
                 The List of things
               </h2>
+
+              {session ? (
+                <div>
+                  <h3>session dump</h3>
+                  <pre>{JSON.stringify(session, null, 2)}</pre>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
