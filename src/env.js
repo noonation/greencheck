@@ -29,6 +29,7 @@ export const env = createEnv({
     TWITTER_CLIENT_SECRET: z.string(),
     LINKEDIN_CLIENT_ID: z.string(),
     LINKEDIN_CLIENT_SECRET: z.string(),
+    GREENCHECK_SERVER_TOKEN: z.string()
   },
 
   /**
@@ -56,6 +57,7 @@ export const env = createEnv({
     TWITTER_CLIENT_SECRET: process.env.TWITTER_CLIENT_SECRET,
     LINKEDIN_CLIENT_ID: process.env.LINKEDIN_CLIENT_ID,
     LINKEDIN_CLIENT_SECRET: process.env.LINKEDIN_CLIENT_SECRET,
+    GREENCHECK_SERVER_TOKEN: process.env.GREENCHECK_SERVER_TOKEN
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

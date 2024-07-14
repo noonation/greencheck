@@ -15,6 +15,7 @@ type ClaimCheckInput = z.infer<typeof ClaimCheckInput>;
 export async function checkClaim(
   input: ClaimCheckInput,
 ): Promise<GreencheckClaim | GreencheckClaimError> {
+  console.log('token', GREENCHECK_TOKEN)
   if (!GREENCHECK_TOKEN) {
     return {
       error: "preflight check failed",
@@ -22,7 +23,8 @@ export async function checkClaim(
     };
   }
 
-  const url = getUrl(`/greencheck/claim/${input.source}/${input.id}`);
+  const url = getUrl(`/greencheck/claim/login/github/${input.id}`);
+  console.log('fetching', url)
   const response = await fetch(url, {
     headers: {
       authorization: GREENCHECK_TOKEN,
@@ -30,8 +32,10 @@ export async function checkClaim(
   });
   if (response.ok) {
     const data = await response.json();
+    console.log('data', response.ok, data)
     return data;
   } else {
+    console.log('ERROR', response)
     const errorText = await response.text();
     return { error: "something failed", message: errorText };
   }
