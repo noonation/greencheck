@@ -5,7 +5,7 @@ import {
   protectedProcedure,
   // publicProcedure,
 } from "~/server/api/trpc";
-import { checkClaim } from "~/server/noo/checkClaim";
+import { ClaimCheckInput, checkClaim } from "~/server/noo/checkClaim";
 
 export const claimRouter = createTRPCRouter({
   // hello: publicProcedure
@@ -17,6 +17,6 @@ export const claimRouter = createTRPCRouter({
   //   }),
 
   check: protectedProcedure
-    .input(z.object({ source: z.string().min(1), id: z.string() }))
+    .input(ClaimCheckInput)
     .mutation(async ({ input }) => await checkClaim(input)),
 });

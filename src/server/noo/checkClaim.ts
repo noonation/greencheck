@@ -8,14 +8,21 @@ const GREENCHECK_TOKEN = process.env.GREENCHECK_SERVER_TOKEN;
 const getUrl = (path: string) => `${NOO_EXPRESS_SERVER}${path}`;
 
 // set up the data validation:
-const ClaimCheckInput = z.object({ source: z.string().min(1), id: z.string() });
-type ClaimCheckInput = z.infer<typeof ClaimCheckInput>;
+export const ClaimCheckInput = z.object({
+  source: z.string().min(1), // github
+  username: z.string(), // "the username attribute"
+  id: z.string(), // "the user id from source"
+  createIfNotExists: z.boolean().optional(),
+});
+
+// type safety:
+export type ClaimCheckInputType = z.infer<typeof ClaimCheckInput>;
 
 // ping noo-express server to check the claim:
 export async function checkClaim(
-  input: ClaimCheckInput,
+  input: ClaimCheckInputType,
 ): Promise<GreencheckClaim | GreencheckClaimError> {
-  console.log('token', GREENCHECK_TOKEN)
+  console.log("token", GREENCHECK_TOKEN);
   if (!GREENCHECK_TOKEN) {
     return {
       error: "preflight check failed",
@@ -23,19 +30,21 @@ export async function checkClaim(
     };
   }
 
-  const url = getUrl(`/greencheck/claim/login/github/${input.id}`);
-  console.log('fetching', url)
+  const url = getUrl(`/greencheck/claim`);
+  console.log("fetching", url);
   const response = await fetch(url, {
+    method: "POST",
     headers: {
       authorization: GREENCHECK_TOKEN,
     },
+    body: JSON.stringify(input),
   });
   if (response.ok) {
     const data = await response.json();
-    console.log('data', response.ok, data)
+    console.log("data", response.ok, data);
     return data;
   } else {
-    console.log('ERROR', response)
+    console.log("ERROR", response);
     const errorText = await response.text();
     return { error: "something failed", message: errorText };
   }

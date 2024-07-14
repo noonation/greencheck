@@ -1,4 +1,4 @@
-import { Profile } from "next-auth";
+import { Account, Profile } from "next-auth";
 
 export function getClaimIdFromProfile(providerName: string, profile: Profile) {
   switch (providerName) {
@@ -20,6 +20,17 @@ export function getProviderKeyFromProvider(providerName: string) {
   }
 
   console.log("unknown provider, not sure how to get the provider key");
+
+  return "";
+}
+
+export function getUserIdFromAccount(providerName: string, account: Account) {
+  switch (providerName) {
+    case "github":
+      return account.id as string;
+  }
+
+  console.log("unknown provider, not sure how to get the account user id");
 
   return "";
 }

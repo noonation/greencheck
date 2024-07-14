@@ -12,6 +12,7 @@ import { env } from "~/env";
 import {
   getProviderKeyFromProvider,
   getClaimIdFromProfile,
+  getUserIdFromAccount,
 } from "./noo/transformers";
 import { checkClaim } from "./noo/checkClaim";
 import { GreencheckClaim } from "~/types/greencheck";
@@ -86,13 +87,15 @@ export const authOptions: NextAuthOptions = {
       if (trigger === "signIn") {
         const { account, profile } = params;
         if (account && profile) {
-          const claimSource = `${account.provider}.${getProviderKeyFromProvider(account.provider)}`;
-          const claimId = getClaimIdFromProfile(account.provider, profile);
+          const username = getClaimIdFromProfile(account.provider, profile);
+          const id = getUserIdFromAccount(account.provider, account);
 
           try {
             const claimCheck = await checkClaim({
-              source: claimSource,
-              id: claimId,
+              source: account.provider,
+              username,
+              id,
+              createIfNotExists: true,
             });
             console.log("got a claimCheck back");
             console.log(claimCheck);
