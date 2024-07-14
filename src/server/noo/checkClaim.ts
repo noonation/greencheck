@@ -22,7 +22,7 @@ export type ClaimCheckInputType = z.infer<typeof ClaimCheckInput>;
 export async function checkClaim(
   input: ClaimCheckInputType,
 ): Promise<GreencheckClaim | GreencheckClaimError> {
-  console.log("token", GREENCHECK_TOKEN);
+  console.log("token", GREENCHECK_TOKEN, 'input', JSON.stringify(input));
   if (!GREENCHECK_TOKEN) {
     return {
       error: "preflight check failed",
