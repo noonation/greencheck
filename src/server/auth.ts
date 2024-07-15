@@ -15,7 +15,7 @@ import {
   getUserIdFromAccount,
 } from "./noo/transformers";
 import { checkClaim } from "./noo/checkClaim";
-import { GreencheckClaim } from "~/types/greencheck";
+import { GreencheckClaim, GreencheckClaimError } from "~/types/greencheck";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -86,7 +86,7 @@ export const authOptions: NextAuthOptions = {
       const { token, trigger } = params;
       if (trigger === "signIn") {
         const { account, profile } = params;
-        console.log('JWT signing', account, profile)
+        console.log("JWT signing", account, profile);
         if (account && profile) {
           const username = getClaimIdFromProfile(account.provider, profile);
           const id = getUserIdFromAccount(account.provider, account);
@@ -101,9 +101,23 @@ export const authOptions: NextAuthOptions = {
             console.log("got a claimCheck back");
             console.log(claimCheck);
 
-            // maybe here we do a second call to get the user object?
-            token.claims = [claimCheck];
-            console.log('token claims', typeof token, token.claims)
+            if (claimCheck) {
+              if (claimCheck.error) {
+                token.claimError = claimCheck;
+              } else {
+                token.claims = [claimCheck];
+              }
+            } else {
+              console.log(
+                "nothing returned??? guess not found, need Create If Not Exists now",
+              );
+              token.claimError = {
+                error: "claim check failed",
+                message: "no results",
+              };
+            }
+
+            console.log("token claims", typeof token, token.claims);
           } catch (error) {
             console.log("error checking the claim with noo server");
             console.log(error);
@@ -111,7 +125,7 @@ export const authOptions: NextAuthOptions = {
         }
       }
       // return the token
-      console.log('token', token)
+      console.log("token", token);
       return token;
     },
     // @ts-ignore, this is correct function name and object destructure
@@ -119,6 +133,8 @@ export const authOptions: NextAuthOptions = {
       // Send properties to the client, like an access_token from a provider.
       if (token.claims) {
         session.claims = (token.claims || []) as GreencheckClaim[];
+      } else if (token.claimError) {
+        session.claimError = token.claimError as GreencheckClaimError;
       }
       return session;
     },

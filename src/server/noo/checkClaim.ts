@@ -32,21 +32,26 @@ export async function checkClaim(
 
   const url = getUrl(`/greencheck/claim`);
   console.log("fetching", url);
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      authorization: GREENCHECK_TOKEN,
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(input),
-  });
-  if (response.ok) {
-    const data = await response.json();
-    console.log("data", response.ok, data);
-    return data.response;
-  } else {
-    console.log("ERROR", response);
-    const errorText = await response.text();
-    return { error: "something failed", message: errorText };
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        authorization: GREENCHECK_TOKEN,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(input),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      console.log("data", response.ok, data);
+      return data.response;
+    } else {
+      console.log("ERROR", response);
+      const errorText = await response.text();
+      return { error: "something failed", message: errorText };
+    }
+  } catch (e) {
+    console.log("caught fetch error", e);
+    return { error: "fetch fail while checking claim", message: e };
   }
 }
