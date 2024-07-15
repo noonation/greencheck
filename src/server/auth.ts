@@ -7,6 +7,7 @@ import DiscordProvider from "next-auth/providers/discord";
 import GitHubProvider from "next-auth/providers/github";
 import TwitterProvider from "next-auth/providers/twitter";
 import LinkedinProvider from "next-auth/providers/linkedin";
+import GitlabProvider from "next-auth/providers/gitlab";
 
 import { env } from "~/env";
 import {
@@ -144,6 +145,10 @@ export const authOptions: NextAuthOptions = {
     LinkedinProvider({
       clientId: env.LINKEDIN_CLIENT_ID,
       clientSecret: env.LINKEDIN_CLIENT_SECRET,
+    }),
+    GitlabProvider({
+      clientId: env.GITLAB_CLIENT_ID,
+      clientSecret: env.GITLAB_CLIENT_SECRET,
     }),
 
     /**
