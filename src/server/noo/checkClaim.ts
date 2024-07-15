@@ -43,7 +43,7 @@ export async function checkClaim(
   if (response.ok) {
     const data = await response.json();
     console.log("data", response.ok, data);
-    return data;
+    return data.response;
   } else {
     console.log("ERROR", response);
     const errorText = await response.text();

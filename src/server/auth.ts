@@ -86,6 +86,7 @@ export const authOptions: NextAuthOptions = {
       const { token, trigger } = params;
       if (trigger === "signIn") {
         const { account, profile } = params;
+        console.log('JWT signing', account, profile)
         if (account && profile) {
           const username = getClaimIdFromProfile(account.provider, profile);
           const id = getUserIdFromAccount(account.provider, account);
@@ -102,6 +103,7 @@ export const authOptions: NextAuthOptions = {
 
             // maybe here we do a second call to get the user object?
             token.claims = [claimCheck];
+            console.log('token claims', typeof token, token.claims)
           } catch (error) {
             console.log("error checking the claim with noo server");
             console.log(error);
@@ -109,6 +111,7 @@ export const authOptions: NextAuthOptions = {
         }
       }
       // return the token
+      console.log('token', token)
       return token;
     },
     // @ts-ignore, this is correct function name and object destructure
