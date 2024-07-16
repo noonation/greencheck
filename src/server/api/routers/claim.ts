@@ -6,7 +6,7 @@ import {
   // publicProcedure,
 } from "~/server/api/trpc";
 import { ClaimCheckInput, checkClaim } from "~/server/noo/checkClaim";
-import { sendClaim } from "~/server/noo/sendClaim";
+// import { sendClaim } from "~/server/noo/sendClaim"; // probably delete this, doing thru trpc now
 
 export const claimRouter = createTRPCRouter({
   // hello: publicProcedure
@@ -17,10 +17,10 @@ export const claimRouter = createTRPCRouter({
   //     };
   //   }),
 
-  _check: protectedProcedure
-    .input(ClaimCheckInput)
-    .mutation(async ({ input }) => await checkClaim(input)),
   check: protectedProcedure
     .input(ClaimCheckInput)
-    .mutation(async ({ input }) => await sendClaim(input)),
+    .mutation(async ({ input }) => await checkClaim(input)),
+/*   sendClaim: protectedProcedure
+    .input(ClaimCheckInput)
+    .mutation(async ({ input }) => await sendClaim(input)), */
 });
