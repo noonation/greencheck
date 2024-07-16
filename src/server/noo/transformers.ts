@@ -1,5 +1,7 @@
 import { Account, Profile } from "next-auth";
 
+import { NOO_EXPRESS_SERVER } from "./constants";
+
 export function getClaimIdFromProfile(providerName: string, profile: Profile) {
   switch (providerName) {
     case "github":
@@ -34,3 +36,5 @@ export function getUserIdFromAccount(providerName: string, account: Account) {
 
   return "";
 }
+
+export const getUrl = (path: string) => `${NOO_EXPRESS_SERVER}${path}`;

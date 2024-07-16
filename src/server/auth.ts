@@ -15,7 +15,7 @@ import {
   getUserIdFromAccount,
 } from "./noo/transformers";
 import { checkClaim } from "./noo/checkClaim";
-import { GreencheckClaim, GreencheckClaimError } from "~/types/greencheck";
+import { GreencheckClaim, GreencheckErrorResponse } from "~/types/greencheck";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -134,7 +134,7 @@ export const authOptions: NextAuthOptions = {
       if (token.claims) {
         session.claims = (token.claims || []) as GreencheckClaim[];
       } else if (token.claimError) {
-        session.claimError = token.claimError as GreencheckClaimError;
+        session.claimError = token.claimError as GreencheckErrorResponse;
       }
       return session;
     },
