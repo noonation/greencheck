@@ -27,8 +27,12 @@ export const env = createEnv({
     GITHUB_CLIENT_SECRET: z.string(),
     TWITTER_CLIENT_ID: z.string(),
     TWITTER_CLIENT_SECRET: z.string(),
+    TWITTER_TOKEN: z.string(),
+    TWITTER_TOKEN_SECRET: z.string(),
     LINKEDIN_CLIENT_ID: z.string(),
     LINKEDIN_CLIENT_SECRET: z.string(),
+    GITLAB_CLIENT_ID: z.string(),
+    GITLAB_CLIENT_SECRET: z.string(),
     GREENCHECK_SERVER_TOKEN: z.string()
   },
 
@@ -55,8 +59,12 @@ export const env = createEnv({
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     TWITTER_CLIENT_ID: process.env.TWITTER_CLIENT_ID,
     TWITTER_CLIENT_SECRET: process.env.TWITTER_CLIENT_SECRET,
+    TWITTER_TOKEN: process.env.TWITTER_TOKEN,
+    TWITTER_TOKEN_SECRET: process.env.TWITTER_TOKEN_SECRET,
     LINKEDIN_CLIENT_ID: process.env.LINKEDIN_CLIENT_ID,
     LINKEDIN_CLIENT_SECRET: process.env.LINKEDIN_CLIENT_SECRET,
+    GITLAB_CLIENT_ID: process.env.GITLAB_CLIENT_ID,
+    GITLAB_CLIENT_SECRET: process.env.GITLAB_CLIENT_SECRET,
     GREENCHECK_SERVER_TOKEN: process.env.GREENCHECK_SERVER_TOKEN
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },

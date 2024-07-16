@@ -2,8 +2,9 @@
 
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { mock } from "node:test";
 import { useState } from "react";
-import { PingResponseType } from "~/server/noo/ping";
+import { PingResponseType, SendClaimResponseType, mock_data } from "~/server/noo/ping";
 import { api, TRPCReactProvider } from "~/trpc/react";
 import { GreencheckErrorResponse } from "~/types/greencheck";
 
@@ -14,9 +15,15 @@ export default function Thing2() {
   const [pingResponse, setPingResponse] = useState<
     PingResponseType | undefined
   >();
+  const [sendClaimResponse, setSendClaimResponse] = useState<
+    SendClaimResponseType | undefined
+  >();
   const [pingError, setPingError] = useState<
     GreencheckErrorResponse | undefined
   >();
+  const [sendClaimError, setSendClaimError] = useState<
+  GreencheckErrorResponse | undefined
+>();
 
   const session = useSession();
   console.log(session.data);
@@ -35,8 +42,27 @@ export default function Thing2() {
     },
   });
 
+  const sendSendClaim = api.ping.sendSendClaim.useMutation({
+    onMutate: () => {
+      console.log('on mutate')
+      setSendClaimResponse(undefined);
+      setSendClaimError(undefined);
+    },
+    onSuccess: (sendClaimResponse) => {
+      if ("error" in sendClaimResponse) {
+        setSendClaimError(sendClaimResponse);
+      } else {
+        setSendClaimResponse(sendClaimResponse);
+      }
+    },
+  });
+
   const handleSendPing = async (stringToPingWith?: string) => {
     sendPing.mutate({ reflect: stringToPingWith });
+  };
+  const handleSendSendClaim = async () => {
+    console.log('handle send claim: data', mock_data)
+    sendSendClaim.mutate(mock_data);
   };
 
   const { isPending: pingIsSending } = sendPing;
@@ -97,13 +123,23 @@ export default function Thing2() {
             >
               Clear response and error
             </button>
+            <button
+              onClick={() => handleSendSendClaim()}
+              className={sampleButtonClassNames}
+              disabled={!!pingIsSending}
+            >
+              Send Claim
+            </button>
           </div>
 
           <div className="mt-2 flex flex-row gap-4 border border-red-500">
             <div>
-              <p>Ping response:</p>
+              <p>Response:</p>
               {pingResponse ? (
                 <pre>{JSON.stringify(pingResponse, null, 2)}</pre>
+              ) :
+              sendClaimResponse ? (
+                <pre>{JSON.stringify(sendClaimResponse, null, 2)}</pre>
               ) : (
                 <p>no response currently...</p>
               )}
