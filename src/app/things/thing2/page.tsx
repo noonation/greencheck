@@ -27,7 +27,7 @@ export default function Thing2() {
   >();
 
   const session = useSession();
-  console.log(session.data);
+  console.log('session', session.data);
 
   const sendPing = api.ping.sendPing.useMutation({
     onMutate: () => {
