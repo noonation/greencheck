@@ -4,6 +4,8 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import { SessionProvider } from "next-auth/react";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "GreenCheck",
@@ -17,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="retro" className={`${GeistSans.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

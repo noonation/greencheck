@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 import { PingResponseType } from "~/server/noo/ping";
@@ -16,6 +17,9 @@ export default function Thing2() {
   const [pingError, setPingError] = useState<
     GreencheckErrorResponse | undefined
   >();
+
+  const session = useSession();
+  console.log(session.data);
 
   const sendPing = api.ping.sendPing.useMutation({
     onMutate: () => {
@@ -38,7 +42,6 @@ export default function Thing2() {
   const { isPending: pingIsSending } = sendPing;
 
   return (
-    // <TRPCReactProvider>
     <main className="flex min-h-screen flex-col items-center">
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
         <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
@@ -125,6 +128,5 @@ export default function Thing2() {
         </div>
       </div>
     </main>
-    // </TRPCReactProvider>
   );
 }
