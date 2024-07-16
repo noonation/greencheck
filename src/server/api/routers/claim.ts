@@ -17,8 +17,10 @@ export const claimRouter = createTRPCRouter({
   //     };
   //   }),
 
-
+  _check: protectedProcedure
+    .input(ClaimCheckInput)
+    .mutation(async ({ input }) => await checkClaim(input)),
   check: protectedProcedure
     .input(ClaimCheckInput)
-    .mutation(async ({ input }) => await sendClaim()),
+    .mutation(async ({ input }) => await sendClaim(input)),
 });

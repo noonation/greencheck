@@ -2,7 +2,7 @@ export interface GreencheckClaim {
   [key: string]: unknown;
 }
 
-export interface GreencheckClaimError {
+export interface GreencheckErrorResponse {
   error: string;
   message: string;
 }

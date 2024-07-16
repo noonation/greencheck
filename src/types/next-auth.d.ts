@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 
 import type GreencheckClaim from "./greencheck";
+import { GreencheckErrorResponse } from "./greencheck";
 
 declare module "next-auth" {
   /**
@@ -12,5 +13,12 @@ declare module "next-auth" {
     //   address: string
     // }
     claims?: GreencheckClaim[];
+    claimError?: GreencheckErrorResponse;
+  }
+
+  // attempting to define some properties through (playing with the typing)
+  interface JWT {
+    claims?: GreencheckClaim[];
+    claimError?: GreencheckErrorResponse;
   }
 }
