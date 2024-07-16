@@ -4,8 +4,9 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { mock } from "node:test";
 import { useState } from "react";
-import { PingResponseType, SendClaimResponseType, mock_data } from "~/server/noo/ping";
-import { api, TRPCReactProvider } from "~/trpc/react";
+import { PingResponseType } from "~/server/noo/ping";
+import { SendClaimResponseType, mock_data } from "~/server/noo/sendClaim";
+import { api } from "~/trpc/react";
 import { GreencheckErrorResponse } from "~/types/greencheck";
 
 const sampleButtonClassNames =
@@ -22,8 +23,8 @@ export default function Thing2() {
     GreencheckErrorResponse | undefined
   >();
   const [sendClaimError, setSendClaimError] = useState<
-  GreencheckErrorResponse | undefined
->();
+    GreencheckErrorResponse | undefined
+  >();
 
   const session = useSession();
   console.log(session.data);
@@ -42,9 +43,9 @@ export default function Thing2() {
     },
   });
 
-  const sendSendClaim = api.ping.sendSendClaim.useMutation({
+  const sendClaim = api.claim.sendClaim.useMutation({
     onMutate: () => {
-      console.log('on mutate')
+      console.log("on mutate");
       setSendClaimResponse(undefined);
       setSendClaimError(undefined);
     },
@@ -60,9 +61,10 @@ export default function Thing2() {
   const handleSendPing = async (stringToPingWith?: string) => {
     sendPing.mutate({ reflect: stringToPingWith });
   };
+
   const handleSendSendClaim = async () => {
-    console.log('handle send claim: data', mock_data)
-    sendSendClaim.mutate(mock_data);
+    console.log("handle send claim: data", mock_data);
+    sendClaim.mutate(mock_data);
   };
 
   const { isPending: pingIsSending } = sendPing;
@@ -137,8 +139,7 @@ export default function Thing2() {
               <p>Response:</p>
               {pingResponse ? (
                 <pre>{JSON.stringify(pingResponse, null, 2)}</pre>
-              ) :
-              sendClaimResponse ? (
+              ) : sendClaimResponse ? (
                 <pre>{JSON.stringify(sendClaimResponse, null, 2)}</pre>
               ) : (
                 <p>no response currently...</p>
